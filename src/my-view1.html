@@ -10,6 +10,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="shared-styles.html">
 
 <dom-module id="my-view1">
@@ -33,12 +34,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <div class="card" on-keydown="configureKey">
       <h1>Configure Keymap</h1>
-      <template is="dom-repeat" items="{{keys}}">
+      <template id="configuration" is="dom-repeat" items="{{keys}}">
          <paper-button toggles raised on-tap="toggleKey">{{item.value}}</paper-button>
       </template>
     </div>
     <div>
-      <paper-button raised class="indigo">Generate</paper-button>
+      <paper-button raised class="indigo" on-tap="generateKeymap">Generate</paper-button>
+      <iron-ajax id="generateKeymapAjax" contentType="application/json" url="http://petstore.swagger.io/v2/pet" method="POST" body=""></iron-ajax>
     </div>
   </template>
 
@@ -48,10 +50,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       ready: function() {
         this.keys = [
             {value: 'A', enabled: false},
-            {value: 'B', enabled: false},
+            {value: 'B', enabled: false}
         ];
       },
-      configureKey: function (e) {
+      configureKey: function(e) {
         for (var index in this.keys){
           var key = this.keys[index];
           if(this.get('keys.' + index + '.enabled')){
@@ -59,14 +61,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           }
         }
       },
-      toggleKey: function (e) {
+      toggleKey: function(e) {
         var model = e.model;
         if(model.get('item.enabled')){
           model.set('item.enabled', false);
         } else {
           model.set('item.enabled', true);
         }
+      },
+      generateKeymap: function(e) {
+        var keyValues = this.keys.map(function(obj) {
+          return obj.value;
+        });
+        var generateKeymapAjaxBody = {layer: keyValues};
+        this.$.generateKeymapAjax.body = JSON.stringify(generateKeymapAjaxBody);
+        this.$.generateKeymapAjax.generateRequest();
       }
     });
+
   </script>
 </dom-module>
