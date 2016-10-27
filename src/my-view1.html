@@ -20,17 +20,45 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         padding: 10px;
       }
+
+      paper-button[active] {
+        background-color: var(--paper-green-500);
+      }
     </style>
 
-    <div class="card">
+    <div class="card" on-keydown="configureKey">
       <h1>Configure Keymap</h1>
-      <paper-button raised>KEY</paper-button>
+      <template is="dom-repeat" items="{{keys}}">
+         <paper-button toggles raised on-tap="toggleKey">{{item.value}}</paper-button>
+      </template>
     </div>
   </template>
 
   <script>
     Polymer({
-      is: 'my-view1'
+      is: 'my-view1',
+      ready: function() {
+        this.keys = [
+            {value: 'A', enabled: false},
+            {value: 'B', enabled: false},
+        ];
+      },
+      configureKey: function (e) {
+        for (var index in this.keys){
+          var key = this.keys[index];
+          if(this.get('keys.' + index + '.enabled')){
+            this.set('keys.' + index + '.value', e.keyCode);
+          }
+        }
+      },
+      toggleKey: function (e) {
+        var model = e.model;
+        if(model.get('item.enabled')){
+          model.set('item.enabled', false);
+        } else {
+          model.set('item.enabled', true);
+        }
+      }
     });
   </script>
 </dom-module>
