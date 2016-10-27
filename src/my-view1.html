@@ -47,7 +47,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         for (var index in this.keys){
           var key = this.keys[index];
           if(this.get('keys.' + index + '.enabled')){
-            this.set('keys.' + index + '.value', e.keyCode);
+            this.set('keys.' + index + '.value', e.key);
           }
         }
       },
