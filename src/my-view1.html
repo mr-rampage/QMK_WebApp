@@ -41,14 +41,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <div>
       <paper-button raised class="indigo" on-tap="generateKeymap">Generate</paper-button>
       <iron-ajax id="generateKeymapAjax" headers='{"Content-Type": "application/json"}'
-                 url="http://192.168.36.137:8080/api/qmk/mapkeys/file" method="POST" body=""
-                 on-response="downloadHexFile"></iron-ajax>
+                 url="http://192.168.36.137:8080/api/qmk/files/test-map" method="POST" body=""
+                 handle-as="blob"
+                 on-response="downloadHexFile" last-response="{{hexfileData}}"></iron-ajax>
     </div>
   </template>
 
   <script>
     Polymer({
       is: 'my-view1',
+      properties: {
+        hexfileData: Object
+      },
       ready: function() {
         this.keys = [
             {value: 'A', enabled: false},
@@ -90,9 +94,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       downloadHexFile: function(e, d) {
-        console.log(e);
-        console.log(d.response);
-        var blob = new Blob([e.detail.response], {
+        console.log(this.hexfileData);
+        var blob = new Blob([this.hexfileData], {
           type: "application/octet-stream"
         });
         window.open(window.URL.createObjectURL(blob));
