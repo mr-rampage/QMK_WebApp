@@ -40,7 +40,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </div>
     <div>
       <paper-button raised class="indigo" on-tap="generateKeymap">Generate</paper-button>
-      <iron-ajax id="generateKeymapAjax" contentType="application/json" url="http://petstore.swagger.io/v2/pet" method="POST" body=""></iron-ajax>
+      <iron-ajax id="generateKeymapAjax" headers='{"Content-Type": "application/json"}'
+                 url="http://192.168.36.137:8080/api/qmk/mapkeys/file" method="POST" body=""
+                 handle-as="blob"></iron-ajax>
     </div>
   </template>
 
@@ -50,7 +52,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       ready: function() {
         this.keys = [
             {value: 'A', enabled: false},
-            {value: 'B', enabled: false}
+            {value: 'B', enabled: false},
+            {value: 'C', enabled: false},
+            {value: 'D', enabled: false},
+            {value: 'E', enabled: false},
+            {value: 'F', enabled: false}
         ];
       },
       configureKey: function(e) {
@@ -73,11 +79,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         var keyValues = this.keys.map(function(obj) {
           return obj.value;
         });
-        var generateKeymapAjaxBody = {layer: keyValues};
+
+        var idguid = guid();
+        var generateKeymapAjaxBody = {id: idguid, layer: [keyValues]};
         this.$.generateKeymapAjax.body = JSON.stringify(generateKeymapAjaxBody);
         this.$.generateKeymapAjax.generateRequest();
       }
     });
 
+    function guid() {
+      function s4() {
+        return Math.floor((1 + Math.random()) * 0x10000)
+          .toString(16)
+          .substring(1);
+      }
+      return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+        s4() + '-' + s4() + s4() + s4();
+    }
   </script>
 </dom-module>
