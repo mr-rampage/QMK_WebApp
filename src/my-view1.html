@@ -41,7 +41,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <div>
       <paper-button raised class="indigo" on-tap="generateKeymap">Generate</paper-button>
       <iron-ajax id="generateKeymapAjax" headers='{"Content-Type": "application/json"}'
-                 url="http://192.168.36.137:8080/api/qmk/files/test-map" method="POST" body=""
+                 url="http://192.168.36.137:8080/api/qmk/mapkeys/file" method="POST" body=""
                  handle-as="blob"
                  on-response="downloadHexFile" last-response="{{hexfileData}}"></iron-ajax>
     </div>
@@ -98,7 +98,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         var blob = new Blob([this.hexfileData], {
           type: "application/octet-stream"
         });
-        window.open(window.URL.createObjectURL(blob));
+        <!--window.open(window.URL.createObjectURL(blob));-->
+
+        var link = document.createElement('a');
+        link.download = 'Atreus.hex';
+        link.href = window.URL.createObjectURL(blob);
+        link.click();
       }
     });
 
