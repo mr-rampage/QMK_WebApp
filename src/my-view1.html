@@ -42,7 +42,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <paper-button raised class="indigo" on-tap="generateKeymap">Generate</paper-button>
       <iron-ajax id="generateKeymapAjax" headers='{"Content-Type": "application/json"}'
                  url="http://192.168.36.137:8080/api/qmk/mapkeys/file" method="POST" body=""
-                 handle-as="blob"></iron-ajax>
+                 on-response="downloadHexFile"></iron-ajax>
     </div>
   </template>
 
@@ -59,6 +59,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             {value: 'F', enabled: false}
         ];
       },
+
       configureKey: function(e) {
         for (var index in this.keys){
           var key = this.keys[index];
@@ -67,6 +68,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           }
         }
       },
+
       toggleKey: function(e) {
         var model = e.model;
         if(model.get('item.enabled')){
@@ -75,6 +77,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           model.set('item.enabled', true);
         }
       },
+
       generateKeymap: function(e) {
         var keyValues = this.keys.map(function(obj) {
           return obj.value;
@@ -84,6 +87,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         var generateKeymapAjaxBody = {id: idguid, layer: [keyValues]};
         this.$.generateKeymapAjax.body = JSON.stringify(generateKeymapAjaxBody);
         this.$.generateKeymapAjax.generateRequest();
+      },
+
+      downloadHexFile: function(e, d) {
+        console.log(e);
+        console.log(d.response);
+        var blob = new Blob([e.detail.response], {
+          type: "application/octet-stream"
+        });
+        window.open(window.URL.createObjectURL(blob));
       }
     });
 
